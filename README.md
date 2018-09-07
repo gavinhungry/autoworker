@@ -4,7 +4,7 @@ Web Workers the Easy Way (TM).
 
 No dependencies, only 686 bytes when minified and gzipped.
 
-Define workers in-code or from a separate file, and work with promises to get
+Define workers inline or from a separate file, and work with promises to get
 the results.
 
 Installation
@@ -85,7 +85,7 @@ try {
 ### Separate files
 
 Since workers execute in a different thread, it can be confusing to see their
-definitions in-code. To keep your workers in separate files:
+definitions inline. To keep your workers in separate files:
 
 `sum.js`:
 ```js
