@@ -4,7 +4,7 @@ Web Workers the Easy Way (TM).
 
 No dependencies, only 686 bytes when minified and gzipped.
 
-Define workers in-code or from a separate file, and work with Promises to get
+Define workers in-code or from a separate file, and work with promises to get
 the results.
 
 Installation
