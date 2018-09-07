@@ -1,6 +1,6 @@
 {
   "name": "autoworker",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "author": "Gavin Lloyd <gavinhungry@gmail.com>",
   "description": "Web Workers the Easy Way (TM)",
   "license": "MIT",
