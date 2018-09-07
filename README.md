@@ -2,6 +2,11 @@ autoworker
 ==========
 Web Workers the Easy Way (TM).
 
+No dependencies, only 686 bytes when minified and gzipped.
+
+Define workers in-code or from a separate file, and work with Promises to get
+the results.
+
 Installation
 ------------
 
@@ -42,7 +47,7 @@ await worker.run(5, 10, 15); // 30
 
 ```js
 let worker = new AutoWorker({
-  // destructure your arguments from a single object
+  // destructure arguments from a single object
   sum: ({ a, b, c }) => a + b + c,
 
   // methods can be async as needed
@@ -75,6 +80,21 @@ try {
 } catch(err) {
   // Error: OHNO
 }
+```
+
+### Separate files
+
+Since workers execute in a different thread, it can be confusing to see their
+definitions in-code. To keep your workers in separate files:
+
+```js
+import sum from './sum.js';
+let worker = new AutoWorker(sum);
+```
+
+`sum.js`:
+```js
+export default (a, b, c) => a + b + c;
 ```
 
 License
