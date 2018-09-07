@@ -37,7 +37,7 @@ class AutoWorker {
     };
 
     let blob = new Blob([
-      `let methods = {};`,
+      `const methods = {};`,
       ...names.map(name => `methods['${name}'] = ${methods[name]};`),
       'Object.freeze(methods);',
 
