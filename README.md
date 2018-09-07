@@ -87,14 +87,14 @@ try {
 Since workers execute in a different thread, it can be confusing to see their
 definitions in-code. To keep your workers in separate files:
 
-```js
-import sum from './sum.js';
-let worker = new AutoWorker(sum);
-```
-
 `sum.js`:
 ```js
 export default (a, b, c) => a + b + c;
+```
+
+```js
+import sum from './sum.js';
+let worker = new AutoWorker(sum);
 ```
 
 License
