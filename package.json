@@ -1,0 +1,21 @@
+{
+  "name": "autoworker",
+  "version": "0.0.0",
+  "author": "Gavin Lloyd <gavinhungry@gmail.com>",
+  "description": "Web Workers the Easy Way (TM)",
+  "license": "MIT",
+
+  "keywords": [
+    "worker",
+    "web worker",
+    "promise"
+  ],
+
+  "homepage": "https://github.com/gavinhungry/autoworker",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gavinhungry/autoworker.git"
+  },
+
+  "main": "autoworker.js"
+}
