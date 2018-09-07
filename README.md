@@ -58,14 +58,6 @@ await worker.sum({ a: 1, b: 2, c: 3 }); // 6
 await worker.asyncProduct(2, 4, 8); // 64
 ```
 
-### exec
-
-Methods can also be called by name with `exec`:
-
-```js
-await worker.exec('asyncProduct', 2, 4, 8); // 64
-```
-
 ### Errors
 
 When errors are caught while running methods, the promise is rejected:

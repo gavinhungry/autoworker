@@ -30,26 +30,27 @@ class AutoWorker {
           self.postMessage({ id: data.id, error: {
             message: err.message,
             stack: err.stack
-          }
-        });
+          }});
         }
       });
     };
 
     let blob = new Blob([
-      `const methods = {};`,
+      'const methods = {};',
       ...names.map(name => `methods['${name}'] = ${methods[name]};`),
       'Object.freeze(methods);',
 
       `(${handler})();`
     ], { type: 'application/javascript' });
 
-    this.url = URL.createObjectURL(blob);
-    this.worker = new Worker(this.url);
+    let url = URL.createObjectURL(blob);
+    this._worker = new Worker(url);
 
     // add helper instance methods for each named worker method
     names.forEach(name => {
-      this[name] = (...args) => this.exec(name, ...args);
+      if (!this[name]) {
+        this[name] = (...args) => this._exec(name, ...args);
+      }
     });
   }
 
@@ -67,15 +68,17 @@ class AutoWorker {
   /**
    * Get the results of a named method executed in the worker thread
    *
+   * @private
+   *
    * @param {String} name - method name
    * @param {...Mixed} args - method arguments
    * @return {Promise} method results
    */
-  exec(name, ...args) {
+  _exec(name, ...args) {
     return new Promise((resolve, reject) => {
       let id = AutoWorker.generateId();
 
-      this.worker.addEventListener('message', ({ data }) => {
+      this._worker.addEventListener('message', ({ data }) => {
         // this result is not for us
         if (data.id !== id) {
           return;
@@ -91,7 +94,7 @@ class AutoWorker {
         resolve(data.result);
       });
 
-      this.worker.postMessage({ id, name, args });
+      this._worker.postMessage({ id, name, args });
     });
   }
 }
