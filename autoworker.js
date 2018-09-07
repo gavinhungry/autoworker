@@ -1,11 +1,11 @@
 class AutoWorker {
   constructor(fn) {
     let blob = new Blob([`
-      self.addEventListener('message', async ({ data: { id, input }}) => {
+      self.addEventListener('message', async ({ data: { id, args }}) => {
         let fn = ${fn.toString()};
 
         try {
-          let [ response ] = await Promise.all([fn(input)]);
+          let [ response ] = await Promise.all([fn(...args)]);
           self.postMessage({ id, response });
         } catch(err) {
           self.postMessage({ id, error: {
@@ -32,7 +32,7 @@ class AutoWorker {
       .map(v => String.fromCharCode((Math.floor(v % 26) + 97))).join('');
   }
 
-  run(input) {
+  run(...args) {
     return new Promise((resolve, reject) => {
       let messageId = AutoWorker.generateId();
 
@@ -53,7 +53,7 @@ class AutoWorker {
         resolve(response);
       });
 
-      this.worker.postMessage({ id: messageId, input });
+      this.worker.postMessage({ id: messageId, args });
     });
   }
 }
