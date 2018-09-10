@@ -75,14 +75,20 @@ class AutoWorker {
    * @return {Promise} method results
    */
   _exec(name, ...args) {
-    return new Promise((resolve, reject) => {
-      let id = AutoWorker.generateId();
+    let id = AutoWorker.generateId();
 
-      this._worker.addEventListener('message', ({ data }) => {
+    setTimeout(() => {
+      this._worker.postMessage({ id, name, args });
+    });
+
+    return new Promise((resolve, reject) => {
+      let callback = ({ data }) => {
         // this result is not for us
         if (data.id !== id) {
           return;
         }
+
+        this._worker.removeEventListener('message', callback);
 
         if (data.error) {
           let err = new Error(data.error.message);
@@ -92,9 +98,9 @@ class AutoWorker {
         }
 
         resolve(data.result);
-      });
+      };
 
-      this._worker.postMessage({ id, name, args });
+      this._worker.addEventListener('message', callback);
     });
   }
 }
