@@ -15,15 +15,13 @@ class AutoWorker {
       methods = { run: methods };
     }
 
-    let names = Object.keys(methods);
-
-    let handler = () => {
+    let handler = methods => {
       self.addEventListener('message', async ({ data }) => {
         try {
-          let fn = methods[data.name];
+          let method = methods[data.methodName];
 
           // use Promise.all, so our functions can optionally be async
-          let [ result ] = await Promise.all([fn(...data.args)]);
+          let [ result ] = await Promise.all([method(...data.args)]);
           self.postMessage({ id: data.id, result });
         } catch(err) {
           // we can't send back the entire Error object, so pick properties
@@ -36,20 +34,24 @@ class AutoWorker {
     };
 
     let blob = new Blob([
-      'const methods = {};',
-      ...names.map(name => `methods['${name}'] = ${methods[name]};`),
-      'Object.freeze(methods);',
+      `(${handler})(Object.freeze({`,
+        ...Object.keys(methods).map(methodName => {
+          let method = methods[methodName];
 
-      `(${handler})();`
+          if (typeof method === 'function') {
+            return `"${methodName}": ${method}`;
+          }
+        }).join(),
+      '}));'
     ], { type: 'application/javascript' });
 
     let url = URL.createObjectURL(blob);
     this._worker = new Worker(url);
 
     // add helper instance methods for each named worker method
-    names.forEach(name => {
-      if (!this[name]) {
-        this[name] = (...args) => this._exec(name, ...args);
+    Object.keys(methods).forEach(methodName => {
+      if (!this[methodName]) {
+        this[methodName] = (...args) => this._exec(methodName, ...args);
       }
     });
   }
@@ -70,15 +72,15 @@ class AutoWorker {
    *
    * @private
    *
-   * @param {String} name - method name
+   * @param {String} methodName
    * @param {...Mixed} args - method arguments
    * @return {Promise} method results
    */
-  _exec(name, ...args) {
+  _exec(methodName, ...args) {
     let id = AutoWorker.generateId();
 
     setTimeout(() => {
-      this._worker.postMessage({ id, name, args });
+      this._worker.postMessage({ id, methodName, args });
     });
 
     return new Promise((resolve, reject) => {
