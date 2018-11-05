@@ -19,9 +19,8 @@ class AutoWorker {
       self.addEventListener('message', async ({ data }) => {
         try {
           let method = methods[data.methodName];
+          let result = await method(...data.args);
 
-          // use Promise.all, so our functions can optionally be async
-          let [ result ] = await Promise.all([method(...data.args)]);
           self.postMessage({ id: data.id, result });
         } catch(err) {
           // we can't send back the entire Error object, so pick properties
