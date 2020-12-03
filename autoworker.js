@@ -21,13 +21,19 @@ class AutoWorker {
           let method = methods[data.methodName];
           let result = await method(...data.args);
 
-          self.postMessage({ id: data.id, result });
+          self.postMessage({
+            id: data.id,
+            result
+          });
         } catch(err) {
           // we can't send back the entire Error object, so pick properties
-          self.postMessage({ id: data.id, error: {
-            message: err.message,
-            stack: err.stack
-          }});
+          self.postMessage({
+            id: data.id,
+            error: {
+              message: err.message,
+              stack: err.stack
+            }
+          });
         }
       });
     };
@@ -79,7 +85,11 @@ class AutoWorker {
     let id = AutoWorker.generateId();
 
     setTimeout(() => {
-      this._worker.postMessage({ id, methodName, args });
+      this._worker.postMessage({
+        id,
+        methodName,
+        args
+      });
     });
 
     return new Promise((resolve, reject) => {
