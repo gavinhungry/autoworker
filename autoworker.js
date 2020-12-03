@@ -40,7 +40,7 @@ class AutoWorker {
           if (typeof method === 'function') {
             return `"${methodName}": ${method}`;
           }
-        }).join(),
+        }),
       '}));'
     ], { type: 'application/javascript' });
 
